@@ -1,68 +1,27 @@
-char ** wordBreak(char * s, char ** wordDict, int wordDictSize, int* returnSize){
-    int i;
-    char **ret;
-    ret = malloc(0);
-    *returnSize = 0;
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+
+bool hasCycle(struct ListNode *head) {
+    struct ListNode *slow = head;
+    struct ListNode *fast = head;
     
-    if (*s == 0) {
-        return 0;
+    if (head == 0) {
+        return false;
     }
-    
-    for (i = 0 ; i < wordDictSize ; i++) {
-        char *ch = s;
-        char *wd = wordDict[i];
-        int cnt = 0;
+
+    while(fast->next && fast->next->next) {
+        slow = slow->next;
+        fast = fast->next->next;
         
-        while(*wd != 0 && *ch == *wd) {
-            cnt++;
-            ch++;
-            wd++;
+        if (slow == fast) {
+            return true;
         }
-        
-        if (*wd == 0) {
-            int j, under_returnSize;
-            char **under_ret = wordBreak(s + cnt, wordDict, wordDictSize, &under_returnSize);
-            
-            if (under_ret == 0) {
-                if (*(s + cnt) == 0) {
-                    (*returnSize) += 1;
 
-                    ret = realloc(ret, sizeof(char *) * (*returnSize));
-                    ret[*returnSize - 1] = malloc(sizeof(char) * (cnt + 1));
-                    for (j = 0 ; j < cnt ; j++) {
-                        ret[*returnSize - 1][j] = wordDict[i][j];
-                    }
-                    ret[*returnSize - 1][j] = 0;
-                } else {
-                    return 0;
-                }
-
-            } else {
-                ret = realloc(ret, sizeof(char *) * ((*returnSize) + under_returnSize));
-                //printf("[%d] ", under_returnSize); 
-
-                for (j = 0 ; j < under_returnSize ; j++) {
-                    int k, m;
-                    
-                    ret[*returnSize + j] = malloc(sizeof(char) * (45));                  
-                    for(k = 0 ; k < cnt ; k++) {
-                        ret[*returnSize + j][k] = wordDict[i][k];
-                    }
-                    ret[*returnSize + j][k] = ' ';
-                    
-                    wd = under_ret[j];
-                    while(*wd != 0) {
-                        //printf("[%d,%d]", *wd, k);
-                        ret[*returnSize + j][++k] = *wd;
-                        wd++;
-                    }
-                    ret[*returnSize + j][++k] = 0;
-                    //printf("%s\n", ret[*returnSize + j]);
-                }
-                (*returnSize) += under_returnSize;
-            }
-        }
     }
-    
-    return ret;
+    return false;
 }
